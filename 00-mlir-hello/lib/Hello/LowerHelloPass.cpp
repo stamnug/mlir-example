@@ -31,7 +31,6 @@ public:
 };
 }
 
-
 namespace {
 class LowerHelloPass : public PassWrapper<LowerHelloPass, OperationPass<ModuleOp>> {
 public:
@@ -42,28 +41,28 @@ public:
   StringRef getArgument() const final { return "lower-hello"; }
   StringRef getDescription() const final { return "Lower Hello Dialect."; }
 
-  void runOnOperation() override;
 
   void getDependentDialects(DialectRegistry &registry) const override {
     registry.insert<arith::ArithmeticDialect>();
   }
+
+  void runOnOperation() override {
+    MLIRContext *context = &getContext();
+    ModuleOp module = getOperation();
+
+    ConversionTarget target(*context);
+
+    target.addLegalDialect<arith::ArithmeticDialect>();
+
+    RewritePatternSet patterns(context);
+    patterns.add<HelloConstantLowering>(patterns.getContext());
+
+    if (failed(applyPartialConversion(module, target, std::move(patterns))))
+      signalPassFailure();
+  }
 };
 } // end anonymous namespace.
 
-void LowerHelloPass::runOnOperation() {
-  MLIRContext *context = &getContext();
-  ModuleOp module = getOperation();
-
-  ConversionTarget target(*context);
-
-  target.addLegalDialect<arith::ArithmeticDialect>();
-
-  RewritePatternSet patterns(context);
-  patterns.add<HelloConstantLowering>(patterns.getContext());
-
-  if (failed(applyPartialConversion(module, target, std::move(patterns))))
-    signalPassFailure();
-}
 
 namespace mlir {
 namespace hello {
