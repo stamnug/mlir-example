@@ -1,8 +1,8 @@
 
 
-#include "mlir/Dialect/Arithmetic/IR/Arithmetic.h"
 #include "mlir/Dialect/Bufferization/Transforms/Bufferize.h"
 #include "mlir/Pass/Pass.h"
+#include "mlir/Dialect/Arithmetic/IR/Arithmetic.h"
 
 #include "Hello/HelloDialect.h"
 #include "Hello/HelloOps.h"
@@ -45,7 +45,7 @@ public:
   void runOnOperation() override;
 
   void getDependentDialects(DialectRegistry &registry) const override {
-    registry.insert<hello::HelloDialect>();
+    registry.insert<arith::ArithmeticDialect>();
   }
 };
 } // end anonymous namespace.
@@ -57,7 +57,6 @@ void LowerHelloPass::runOnOperation() {
   ConversionTarget target(*context);
 
   target.addLegalDialect<arith::ArithmeticDialect>();
-  target.addLegalOp<ModuleOp>();
 
   RewritePatternSet patterns(context);
   patterns.add<HelloConstantLowering>(patterns.getContext());
