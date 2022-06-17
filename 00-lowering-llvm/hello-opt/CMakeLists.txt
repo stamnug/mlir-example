@@ -3,9 +3,22 @@ get_property(conversion_libs GLOBAL PROPERTY MLIR_CONVERSION_LIBS)
 set(LIBS
         ${dialect_libs}
         ${conversion_libs}
-        MLIRHello
+        MLIRAnalysis
+        MLIRCallInterfaces
+        MLIRCastInterfaces
+        MLIRExecutionEngine
+        MLIRIR
+        MLIRLLVMCommonConversion
+        MLIRLLVMToLLVMIRTranslation
+        MLIRMemRef
+        MLIRLLVMIR
+        MLIRParser
+        MLIRPass
+        MLIRSideEffectInterfaces
+        MLIRSupport
+        MLIRTargetLLVMIRExport
+        MLIRTransforms
         MLIROptLib
-        MLIRArithmetic
         )
 add_llvm_executable(hello-opt hello-opt.cpp)
 
